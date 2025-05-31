@@ -5,15 +5,31 @@ import venv
 
 VENV_DIR = "env"
 REQUIREMENTS = [
-    "opencv-python",
-    "numpy",
-    "pandas",
-    "scikit-learn",
-    "deepface",
+    "deepface>=0.0.79",
+    "opencv-python>=4.5.0",
+    "scikit-learn>=1.0.0",
+    "pandas>=1.3.0",
+    "numpy>=1.21.0",
+    "matplotlib>=3.4.0",
+    "Pillow>=9.0.0",
     "tk"  # çoğu zaman sistemde yüklüdür ama garanti olsun diye ekledik
 ]
 
 APP_FILENAME = "face_app.py"  # Ana uygulamanın dosya adı
+
+def set_execution_policy():
+    if os.name == "nt":  # Sadece Windows'ta geçerli
+        try:
+            print("🔐 PowerShell güvenlik politikası güncelleniyor...")
+            subprocess.run([
+                "powershell", 
+                "-Command", 
+                "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force"
+            ], check=True)
+            print("✅ ExecutionPolicy başarıyla güncellendi.")
+        except subprocess.CalledProcessError:
+            print("⚠️ ExecutionPolicy ayarlanamadı. Lütfen PowerShell'i yönetici olarak çalıştırarak manuel olarak aşağıdaki komutu girin:\n")
+            print("Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser")
 
 def create_virtual_env():
     if not os.path.exists(VENV_DIR):
@@ -36,6 +52,7 @@ def run_app():
     subprocess.call([python_executable, APP_FILENAME])
 
 if __name__ == "__main__":
+    set_execution_policy()
     create_virtual_env()
     install_requirements()
     run_app()
